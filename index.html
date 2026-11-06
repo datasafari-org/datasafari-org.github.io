@@ -1,0 +1,518 @@
+<title>DataSafari</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Layout: two-column hero → single-column tool cards → footer */
+  :root {
+    --bg:          #f6eed8;
+    --bg-card:     #fdf8ef;
+    --bg-alt:      #e8d4a8;
+    --fg:          #2a1a08;
+    --fg2:         #7a5a30;
+    --accent:      #c4580a;
+    --accent-bg:   #fde8d0;
+    --green:       #4a7832;
+    --green-bg:    #e0edcf;
+    --border:      #c09060;
+    --border-lt:   #dfc898;
+    --stamp:       #8b1a1a;
+    --shadow:      0 2px 8px rgba(80,40,0,.12), 0 8px 24px rgba(80,40,0,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #130e06;
+      --bg-card:   #1e1608;
+      --bg-alt:    #0d0904;
+      --fg:        #f0d898;
+      --fg2:       #9a7a48;
+      --accent:    #e06818;
+      --accent-bg: #3a1a06;
+      --green:     #78b848;
+      --green-bg:  #142408;
+      --border:    #4a3218;
+      --border-lt: #3a2810;
+      --stamp:     #cc3030;
+      --shadow:    0 2px 8px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #130e06;
+    --bg-card:   #1e1608;
+    --bg-alt:    #0d0904;
+    --fg:        #f0d898;
+    --fg2:       #9a7a48;
+    --accent:    #e06818;
+    --accent-bg: #3a1a06;
+    --green:     #78b848;
+    --green-bg:  #142408;
+    --border:    #4a3218;
+    --border-lt: #3a2810;
+    --stamp:     #cc3030;
+    --shadow:    0 2px 8px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.65;
+    padding-left:  max(0px, env(safe-area-inset-left,  0px));
+    padding-right: max(0px, env(safe-area-inset-right, 0px));
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Nav ─────────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg-alt);
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .nav-logo {
+    font-family: 'Rye', serif;
+    font-size: 20px; letter-spacing: .04em;
+    color: var(--fg); display: flex; align-items: center; gap: 8px;
+  }
+  .nav-links { display: flex; gap: 20px; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 600; color: var(--fg2); letter-spacing: .04em; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--accent); text-decoration: none; }
+  .nav-cta {
+    background: var(--accent); color: #fff !important;
+    padding: 6px 14px; border-radius: 4px; font-size: 13px !important;
+  }
+  .nav-cta:hover { opacity: .88; }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 480px;
+    align-items: stretch;
+    border-bottom: 2px solid var(--border);
+  }
+  .hero-text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 60px max(40px, env(safe-area-inset-left, 16px));
+    padding-right: 32px;
+  }
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--fg2);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--border); }
+  h1 {
+    font-family: 'Rye', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.0; margin: 0 0 20px;
+    color: var(--fg); letter-spacing: .02em;
+    text-wrap: balance;
+  }
+  .hero-sub {
+    font-size: 17px; color: var(--fg2); margin: 0 0 32px;
+    font-style: italic; max-width: 38ch;
+  }
+  .hero-desc {
+    font-size: 15px; color: var(--fg); margin: 0 0 36px;
+    max-width: 42ch; line-height: 1.7;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #fff;
+    font-family: 'Lora', serif; font-weight: 700;
+    font-size: 15px; padding: 14px 28px; border-radius: 4px;
+    border: 2px solid transparent;
+    transition: background .15s, transform .1s;
+    align-self: flex-start;
+  }
+  .hero-cta:hover { background: var(--fg); text-decoration: none; transform: translateY(-1px); }
+  .hero-art {
+    background: var(--bg-alt);
+    border-left: 2px solid var(--border);
+    display: flex; align-items: flex-end; justify-content: center;
+    overflow: hidden; min-height: 360px;
+  }
+  .hero-art svg { width: 100%; height: 100%; display: block; }
+
+  /* ── Section chrome ──────────────────────────────────── */
+  .section-wrap {
+    padding: 60px max(40px, env(safe-area-inset-left, 20px));
+    padding-right: max(40px, env(safe-area-inset-right, 20px));
+    max-width: 1100px; margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--fg2);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-lt); }
+
+  /* ── Tool cards ──────────────────────────────────────── */
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .tool-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .card-top {
+    padding: 24px 24px 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .expedition-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--stamp);
+    border: 1.5px solid var(--stamp);
+    padding: 3px 8px; border-radius: 2px;
+    font-family: 'Lora', serif;
+    transform: rotate(-1deg); display: inline-block;
+  }
+  .status-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 10px;
+  }
+  .status-live { background: var(--green-bg); color: var(--green); }
+  .status-soon { background: var(--bg-alt); color: var(--fg2); }
+  .card-body { padding: 20px 24px 24px; }
+  .card-title {
+    font-family: 'Rye', serif; font-size: 28px; margin: 0 0 4px;
+    color: var(--fg); letter-spacing: .03em;
+  }
+  .card-subtitle { font-size: 12px; color: var(--fg2); margin: 0 0 14px; letter-spacing: .03em; font-style: italic; }
+  .card-desc { font-size: 15px; color: var(--fg); margin: 0 0 20px; line-height: 1.6; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+  .tag {
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 3px;
+    letter-spacing: .03em; font-family: 'Lora', serif;
+  }
+  .tag-orange { background: var(--accent-bg); color: var(--accent); }
+  .tag-green  { background: var(--green-bg);  color: var(--green); }
+  .tag-brown  { background: var(--bg-alt);    color: var(--fg2); }
+  .card-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--fg); color: var(--bg);
+    font-family: 'Lora', serif; font-weight: 700; font-size: 14px;
+    padding: 11px 22px; border-radius: 4px;
+    transition: background .15s;
+  }
+  .card-cta:hover { background: var(--accent); text-decoration: none; }
+
+  /* Coming soon card */
+  .tool-card.soon {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 220px; text-align: center;
+    border-style: dashed;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 10px,
+      color-mix(in srgb, var(--border-lt) 30%, transparent) 10px,
+      color-mix(in srgb, var(--border-lt) 30%, transparent) 11px
+    );
+  }
+  .soon-inner { padding: 32px; }
+  .soon-num { font-family: 'Rye', serif; font-size: 48px; color: var(--border); line-height: 1; }
+  .soon-label { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--fg2); margin-top: 8px; }
+  .soon-sub { font-size: 14px; font-style: italic; color: var(--fg2); margin-top: 10px; }
+
+  /* ── About strip ─────────────────────────────────────── */
+  .about-strip {
+    background: var(--bg-alt);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+  .about-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 40px max(40px, env(safe-area-inset-left, 20px));
+    padding-right: max(40px, env(safe-area-inset-right, 20px));
+    display: flex; align-items: center; gap: 32px;
+    flex-wrap: wrap;
+  }
+  .about-text { flex: 1; min-width: 260px; }
+  .about-text h3 { font-family: 'Rye', serif; font-size: 20px; margin: 0 0 10px; }
+  .about-text p { margin: 0; color: var(--fg2); font-size: 15px; }
+  .about-meerkat { flex-shrink: 0; }
+
+  /* ── Footer ──────────────────────────────────────────── */
+  footer {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 32px max(40px, env(safe-area-inset-left, 20px));
+    padding-right: max(40px, env(safe-area-inset-right, 20px));
+    padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-family: 'Rye', serif; font-size: 18px; color: var(--bg); }
+  .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .footer-links a { font-size: 13px; color: var(--bg); opacity: .6; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .footer-links a:hover { opacity: 1; text-decoration: none; }
+  .footer-credit { font-size: 13px; opacity: .5; }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-art { min-height: 240px; border-left: none; border-top: 2px solid var(--border); }
+    .hero-text { padding: 40px max(20px, env(safe-area-inset-left, 16px)); padding-right: 20px; }
+    .section-wrap { padding: 40px max(20px, env(safe-area-inset-left, 16px)); padding-right: 20px; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="10" fill="var(--accent)" opacity=".15"/>
+      <ellipse cx="11" cy="13" rx="5" ry="7" fill="var(--accent)"/>
+      <ellipse cx="11" cy="8"  rx="4.5" ry="5" fill="var(--accent)"/>
+      <circle cx="8.5" cy="7.5" r="1.2" fill="var(--bg-card)"/>
+      <circle cx="13.5" cy="7.5" r="1.2" fill="var(--bg-card)"/>
+      <ellipse cx="7.5" cy="4" rx="2" ry="2.5" fill="var(--accent)"/>
+      <ellipse cx="14.5" cy="4" rx="2" ry="2.5" fill="var(--accent)"/>
+    </svg>
+    DataSafari
+  </div>
+  <div class="nav-links">
+    <a href="#tools">Tools</a>
+    <a href="https://github.com/datasafari-org" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://yoink.datasafari.org" class="nav-cta">YOINK! →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="eyebrow">Digital threat hunting</div>
+    <h1>Data&shy;Safari</h1>
+    <p class="hero-sub">Tracking threats in the digital savanna.</p>
+    <p class="hero-desc">Open-source tools for threat hunters, incident responders, and IOC wranglers. No install. No cloud. No dependencies. Just results — right in the browser.</p>
+    <a href="#tools" class="hero-cta">Start the Hunt →</a>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <!-- Savanna scene with meerkat -->
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#f5b942"/>
+          <stop offset="60%"  stop-color="#f0844a"/>
+          <stop offset="100%" stop-color="#e06030"/>
+        </linearGradient>
+        <linearGradient id="sky-dark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#2a1a0a"/>
+          <stop offset="60%"  stop-color="#3a2010"/>
+          <stop offset="100%" stop-color="#4a2810"/>
+        </linearGradient>
+        <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fff8e0"/>
+          <stop offset="100%" stop-color="#f5b942" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Sky -->
+      <rect width="500" height="400" fill="url(#sky)" class="sky-rect"/>
+
+      <!-- Sun glow -->
+      <circle cx="380" cy="80" r="55" fill="url(#sun)" opacity=".8"/>
+      <circle cx="380" cy="80" r="30" fill="#fff9e0" opacity=".9"/>
+
+      <!-- Distant hills -->
+      <ellipse cx="130" cy="270" rx="180" ry="50" fill="#8a6020" opacity=".35"/>
+      <ellipse cx="400" cy="275" rx="140" ry="40" fill="#7a5518" opacity=".3"/>
+
+      <!-- Ground -->
+      <path d="M0 310 Q80 295 160 305 Q240 315 320 300 Q400 285 500 295 L500 400 L0 400 Z" fill="#7a5520"/>
+      <path d="M0 320 Q100 308 200 318 Q300 328 400 312 Q450 306 500 310 L500 400 L0 400 Z" fill="#5a3e14"/>
+
+      <!-- Grass tufts -->
+      <g fill="#9a7030" opacity=".8">
+        <path d="M20 318 Q22 305 24 318"/>
+        <path d="M28 316 Q30 303 32 316"/>
+        <path d="M60 312 Q62 300 64 312"/>
+        <path d="M200 315 Q202 302 204 315"/>
+        <path d="M210 317 Q212 304 214 317"/>
+        <path d="M350 308 Q352 295 354 308"/>
+        <path d="M440 312 Q442 300 444 312"/>
+        <path d="M460 310 Q462 298 464 310"/>
+        <path d="M470 314 Q472 301 474 314"/>
+      </g>
+
+      <!-- Acacia tree (right) -->
+      <rect x="368" y="230" width="10" height="80" rx="4" fill="#3a2008"/>
+      <!-- Branch left -->
+      <line x1="373" y1="260" x2="340" y2="240" stroke="#3a2008" stroke-width="6" stroke-linecap="round"/>
+      <!-- Branch right -->
+      <line x1="373" y1="255" x2="405" y2="238" stroke="#3a2008" stroke-width="6" stroke-linecap="round"/>
+      <!-- Canopy blobs (flat-topped acacia) -->
+      <ellipse cx="358" cy="228" rx="32" ry="14" fill="#3a6020"/>
+      <ellipse cx="387" cy="225" rx="30" ry="13" fill="#4a7828"/>
+      <ellipse cx="372" cy="220" rx="40" ry="10" fill="#568a30"/>
+      <ellipse cx="372" cy="218" rx="38" ry="8" fill="#5a9035"/>
+      <!-- Small acacia (far right) -->
+      <rect x="460" y="264" width="6" height="46" rx="3" fill="#3a2008"/>
+      <ellipse cx="463" cy="260" rx="20" ry="8" fill="#3a6020"/>
+      <ellipse cx="463" cy="258" rx="22" ry="6" fill="#4a7828"/>
+
+      <!-- Meerkat body -->
+      <g transform="translate(165, 155)">
+        <!-- Tail -->
+        <path d="M28 115 Q52 118 58 95 Q62 78 50 65" stroke="#9a7040" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <path d="M28 115 Q52 118 58 95 Q62 78 50 65" stroke="#6a4820" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>
+        <!-- Tail tip -->
+        <circle cx="50" cy="63" r="7" fill="#3a2010"/>
+
+        <!-- Left leg -->
+        <ellipse cx="22" cy="130" rx="8" ry="18" fill="#c09050" transform="rotate(5,22,130)"/>
+        <!-- Right leg -->
+        <ellipse cx="40" cy="130" rx="8" ry="18" fill="#c09050" transform="rotate(-5,40,130)"/>
+        <!-- Left foot -->
+        <ellipse cx="20" cy="145" rx="10" ry="5" fill="#9a7030"/>
+        <!-- Right foot -->
+        <ellipse cx="42" cy="145" rx="10" ry="5" fill="#9a7030"/>
+
+        <!-- Body -->
+        <ellipse cx="31" cy="105" rx="23" ry="34" fill="#c09050"/>
+        <!-- Belly -->
+        <ellipse cx="31" cy="105" rx="14" ry="22" fill="#e8c880"/>
+        <!-- Back stripes -->
+        <path d="M20 82 Q22 100 20 120" stroke="#8a6030" stroke-width="4" fill="none" stroke-linecap="round" opacity=".5"/>
+        <path d="M28 79 Q30 97 28 118" stroke="#8a6030" stroke-width="4" fill="none" stroke-linecap="round" opacity=".5"/>
+
+        <!-- Left arm -->
+        <ellipse cx="10" cy="100" rx="8" ry="17" fill="#c09050" transform="rotate(-18,10,100)"/>
+        <!-- Right arm -->
+        <ellipse cx="52" cy="100" rx="8" ry="17" fill="#c09050" transform="rotate(18,52,100)"/>
+
+        <!-- Neck -->
+        <rect x="22" y="66" width="18" height="16" rx="8" fill="#c09050"/>
+
+        <!-- Head -->
+        <ellipse cx="31" cy="58" rx="22" ry="24" fill="#c09050"/>
+
+        <!-- Ears -->
+        <ellipse cx="14" cy="38" rx="9" ry="11" fill="#c09050"/>
+        <ellipse cx="48" cy="38" rx="9" ry="11" fill="#c09050"/>
+        <ellipse cx="14" cy="40" rx="5.5" ry="6.5" fill="#c87060"/>
+        <ellipse cx="48" cy="40" rx="5.5" ry="6.5" fill="#c87060"/>
+
+        <!-- Eye patches (dark fur rings) -->
+        <ellipse cx="20" cy="57" rx="10" ry="9" fill="#2a1408"/>
+        <ellipse cx="42" cy="57" rx="10" ry="9" fill="#2a1408"/>
+
+        <!-- Eyes whites -->
+        <circle cx="20" cy="56" r="6" fill="white"/>
+        <circle cx="42" cy="56" r="6" fill="white"/>
+        <!-- Irises -->
+        <circle cx="20" cy="56" r="4" fill="#5a3010"/>
+        <circle cx="42" cy="56" r="4" fill="#5a3010"/>
+        <!-- Pupils -->
+        <circle cx="21" cy="56" r="2.5" fill="#100800"/>
+        <circle cx="43" cy="56" r="2.5" fill="#100800"/>
+        <!-- Highlights -->
+        <circle cx="22" cy="54" r="1.2" fill="white"/>
+        <circle cx="44" cy="54" r="1.2" fill="white"/>
+
+        <!-- Nose -->
+        <ellipse cx="31" cy="71" rx="5.5" ry="3.5" fill="#6a3010"/>
+        <!-- Mouth -->
+        <path d="M27 75 Q31 79 35 75" stroke="#6a3010" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+        <!-- Safari hat -->
+        <ellipse cx="31" cy="37" rx="28" ry="6" fill="#c89040"/>
+        <ellipse cx="31" cy="34" rx="16" ry="12" fill="#b87c30"/>
+        <path d="M15 37 Q31 32 47 37" stroke="#9a6020" stroke-width="2" fill="none"/>
+      </g>
+
+      <!-- Shadow under meerkat -->
+      <ellipse cx="196" cy="315" rx="22" ry="6" fill="#3a2008" opacity=".3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-wrap">
+    <div class="section-label">Expedition Log</div>
+    <div class="tools-grid">
+
+      <!-- YOINK card -->
+      <div class="tool-card">
+        <div class="card-top">
+          <div class="expedition-badge">Expedition 001</div>
+          <div class="status-badge status-live">● Live</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">YOINK!</div>
+          <div class="card-subtitle">Your Observables Instantly Nabbed &amp; Kategorized</div>
+          <p class="card-desc">Drop any text — phishing emails, sandbox reports, threat advisories — and extract every IOC in one click. 13 types. STIX 2.1 export. SIEM queries for Sentinel, Splunk, Elastic, and Wazuh. Runs fully offline in a single HTML file.</p>
+          <div class="card-tags">
+            <span class="tag tag-orange">13 IOC types</span>
+            <span class="tag tag-orange">STIX 2.1</span>
+            <span class="tag tag-green">Zero dependencies</span>
+            <span class="tag tag-green">Offline-first</span>
+            <span class="tag tag-brown">EN / NL</span>
+          </div>
+          <a href="https://yoink.datasafari.org" class="card-cta" target="_blank" rel="noopener">Launch Expedition →</a>
+        </div>
+      </div>
+
+      <!-- Coming soon -->
+      <div class="tool-card soon">
+        <div class="soon-inner">
+          <div class="expedition-badge">Expedition 002</div>
+          <div class="soon-num">???</div>
+          <div class="soon-label">Next target: unknown</div>
+          <div class="soon-sub">Stay on the trail.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="about-strip">
+  <div class="about-inner">
+    <!-- Small meerkat icon -->
+    <div class="about-meerkat" aria-hidden="true">
+      <svg width="64" height="80" viewBox="0 0 62 80" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="31" cy="52" rx="16" ry="22" fill="var(--accent)" opacity=".8"/>
+        <ellipse cx="31" cy="52" rx="10" ry="14" fill="var(--accent-bg)"/>
+        <ellipse cx="31" cy="30" rx="15" ry="17" fill="var(--accent)" opacity=".8"/>
+        <ellipse cx="22" cy="17" rx="6" ry="8" fill="var(--accent)" opacity=".8"/>
+        <ellipse cx="40" cy="17" rx="6" ry="8" fill="var(--accent)" opacity=".8"/>
+        <ellipse cx="22" cy="29" rx="7" ry="6" fill="var(--bg)" opacity=".5"/>
+        <ellipse cx="40" cy="29" rx="7" ry="6" fill="var(--bg)" opacity=".5"/>
+        <circle cx="22" cy="29" r="4" fill="var(--fg)" opacity=".7"/>
+        <circle cx="40" cy="29" r="4" fill="var(--fg)" opacity=".7"/>
+      </svg>
+    </div>
+    <div class="about-text">
+      <h3>About DataSafari</h3>
+      <p>DataSafari is a collection of open-source security tools, built for the field. Designed for SOC analysts, IR teams, and threat intelligence practitioners who need reliable tools that work anywhere — including air-gapped environments. <br>Created by <strong>Mike Meerkat</strong>.</p>
+    </div>
+    <a href="https://github.com/datasafari-org" target="_blank" rel="noopener" style="font-size:14px;font-weight:700;color:var(--accent);white-space:nowrap;">View on GitHub →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">DataSafari</div>
+  <div class="footer-links">
+    <a href="https://yoink.datasafari.org" target="_blank" rel="noopener">YOINK!</a>
+    <a href="https://github.com/datasafari-org" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/datasafari-org/YOINK/issues" target="_blank" rel="noopener">Report Issue</a>
+  </div>
+  <div class="footer-credit">Built in the digital savanna · Mike Meerkat</div>
+</footer>
